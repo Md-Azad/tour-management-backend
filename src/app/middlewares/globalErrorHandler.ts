@@ -12,10 +12,13 @@ export const globalErrorHandler = (
   next: NextFunction
 ) => {
   let statusCode = 500;
-  let message = ` Something went wrong ${err.message}`;
+  let message = ` Something went wrong`;
 
   if (err instanceof AppError) {
     statusCode = err.statusCode;
+    message = err.message;
+  } else if (err instanceof Error) {
+    statusCode = 500;
     message = err.message;
   }
   res.status(statusCode).json({
