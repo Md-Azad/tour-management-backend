@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import { userServices } from "./user.services";
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await userServices.createUser(req.body);
 
@@ -14,10 +14,7 @@ const createUser = async (req: Request, res: Response) => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.log(error);
-    res
-      .status(StatusCodes.BAD_GATEWAY)
-      .send({ message: `something went wrong ${error.message}` });
+    next(error);
   }
 };
 
