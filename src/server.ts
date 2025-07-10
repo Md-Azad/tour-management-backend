@@ -9,10 +9,10 @@ let server: Server;
 const startServer = async () => {
   try {
     await mongoose.connect(`${envVars.DB_URL}`);
-    console.log("connected to database");
+    console.log("Connected to database");
 
     server = app.listen(5001, () => {
-      console.log("server is listening to port 5000");
+      console.log("Server is listening to port 5000");
     });
   } catch (error) {
     console.log(error);
@@ -22,7 +22,7 @@ const startServer = async () => {
 startServer();
 
 process.on("uncaughtException", (err) => {
-  console.log("an uncaughtException occered", err);
+  console.log("An uncaughtException occered", err);
   if (server) {
     server.close(() => {
       process.exit(1);
@@ -30,7 +30,7 @@ process.on("uncaughtException", (err) => {
   }
 });
 process.on("unhandledRejection", (err) => {
-  console.log("an unhandledRejection occered", err);
+  console.log("An unhandledRejection occered", err);
   if (server) {
     server.close(() => {
       process.exit(1);
@@ -38,7 +38,7 @@ process.on("unhandledRejection", (err) => {
   }
 });
 process.on("SIGTERM", () => {
-  console.log("an SIGTERM occered");
+  console.log("An SIGTERM occered");
   if (server) {
     server.close(() => {
       process.exit(1);
@@ -46,7 +46,7 @@ process.on("SIGTERM", () => {
   }
 });
 process.on("SIGINT", () => {
-  console.log("an was close manually.");
+  console.log("Server was close manually.");
   if (server) {
     server.close(() => {
       process.exit(1);

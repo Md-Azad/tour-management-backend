@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { IUser } from "./user.interface";
 import { User } from "./user.model";
 
@@ -19,7 +20,13 @@ const getAllUser = async () => {
   };
 };
 
+const getSingleUser = async (id: string) => {
+  const user = await User.findById(id);
+  return user;
+};
+
 export const userServices = {
   createUser,
   getAllUser,
+  getSingleUser,
 };

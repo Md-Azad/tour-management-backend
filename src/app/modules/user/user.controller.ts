@@ -4,6 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import { userServices } from "./user.services";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponce } from "../../utils/apiResponce";
+import { Types } from "mongoose";
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -36,8 +37,23 @@ const getAllUsers = catchAsync(
     });
   }
 );
+const getSingleUser = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const result = await userServices.getSingleUser(id);
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: " user retrieved successfully",
+      data: result,
+    });
+  }
+);
 
 export const userController = {
   createUser,
   getAllUsers,
+  getSingleUser,
 };
