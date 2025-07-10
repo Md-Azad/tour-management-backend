@@ -51,9 +51,24 @@ const getSingleUser = catchAsync(
     });
   }
 );
+const deleteUser = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const result = await userServices.deleleUser(id);
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: " user deleted successfully",
+      data: result,
+    });
+  }
+);
 
 export const userController = {
   createUser,
   getAllUsers,
   getSingleUser,
+  deleteUser,
 };
