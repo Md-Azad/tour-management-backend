@@ -1,11 +1,20 @@
-import { Types } from "mongoose";
-import { IUser } from "./user.interface";
+import { StatusCodes } from "http-status-codes";
+import { IAuthProvider, IUser } from "./user.interface";
 import { User } from "./user.model";
-import { number } from "zod";
+import AppError from "../../errorHelpers/AppError";
 
 const createUser = async (payload: Partial<IUser>) => {
-  const { name, email } = payload;
-  const user = await User.create({ name, email });
+  const { email, ...rest } = payload;
+  const isUserExist = await User.findOne({ email });
+  if (isUserExist) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "User already exist");
+  }
+  const authProvider: IAuthProvider = {
+    provider: "credentials",
+    providerId: email as string,
+  };
+
+  const user = await User.create({ email, auths: [authProvider], ...rest });
 
   return user;
 };
