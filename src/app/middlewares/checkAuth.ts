@@ -18,6 +18,7 @@ export const checkAuth =
         accessToken,
         envVars.JWT_ACCESS_TOKEN
       ) as JwtPayload;
+
       if (!authRules.includes(isVerified.role)) {
         throw new AppError(
           StatusCodes.FORBIDDEN,
