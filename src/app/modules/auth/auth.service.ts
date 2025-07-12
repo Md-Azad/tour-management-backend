@@ -3,8 +3,7 @@ import AppError from "../../errorHelpers/AppError";
 import { IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import bcrypt from "bcryptjs";
-import { generateToken } from "../../utils/jwt";
-import { envVars } from "../../config/env";
+import { createUserToken } from "../../utils/userTokens";
 
 const credentialLogin = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
@@ -28,30 +27,14 @@ const credentialLogin = async (payload: Partial<IUser>) => {
     );
   }
 
-  const JwtPayload = {
-    userId: isUserExist._id,
-    role: isUserExist.role,
-    email,
-  };
-
-  const accssToken = generateToken(
-    JwtPayload,
-    envVars.JWT_ACCESS_TOKEN,
-    envVars.JWT_EXPIRES
-  );
-
-  const refreshToken = generateToken(
-    JwtPayload,
-    envVars.JWT_REFRESH_SECRET,
-    envVars.JWT_REFRESH_EXPIRES
-  );
+  const token = createUserToken(isUserExist);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password: pass, ...rest } = isUserExist.toObject();
 
   return {
-    accssToken,
-    refreshToken,
+    accssToken: token.accssToken,
+    refreshToken: token.refreshToken,
     user: rest,
   };
 };
