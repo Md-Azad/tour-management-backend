@@ -9,6 +9,10 @@ const credentialLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const loggedInUser = await authService.credentialLogin(req.body);
 
+    res.cookie("accessToken", loggedInUser.accssToken, {
+      httpOnly: true,
+      secure: false,
+    });
     res.cookie("refreshToken", loggedInUser.refreshToken, {
       httpOnly: true,
       secure: false,
