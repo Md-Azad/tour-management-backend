@@ -8,6 +8,11 @@ const credentialLogin = catchAsync(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
     const loggedInUser = await authService.credentialLogin(req.body);
+
+    res.cookie("refreshToken", loggedInUser.refreshToken, {
+      httpOnly: true,
+      secure: false,
+    });
     sendResponce(res, {
       success: true,
       statusCode: StatusCodes.OK,
@@ -19,7 +24,7 @@ const credentialLogin = catchAsync(
 const getNewAccessToken = catchAsync(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
-    const refreshToken = req.headers.authorization;
+    const refreshToken = req.cookies.refreshToken;
     const accessToken = await authService.getNewAccessToken(
       refreshToken as string
     );
