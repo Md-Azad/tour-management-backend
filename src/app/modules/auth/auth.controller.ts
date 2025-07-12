@@ -31,8 +31,29 @@ const getNewAccessToken = catchAsync(
     sendResponce(res, {
       success: true,
       statusCode: StatusCodes.OK,
-      message: "User logged In successfully",
+      message: "New access token retrieved successfully",
       data: accessToken,
+    });
+  }
+);
+const logout = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: "User logout successfully",
+      data: null,
     });
   }
 );
@@ -40,4 +61,5 @@ const getNewAccessToken = catchAsync(
 export const authController = {
   credentialLogin,
   getNewAccessToken,
+  logout,
 };
