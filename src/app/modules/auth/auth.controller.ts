@@ -3,20 +3,15 @@ import { catchAsync } from "../../utils/catchAsync";
 import { authService } from "./auth.service";
 import { sendResponce } from "../../utils/apiResponce";
 import { StatusCodes } from "http-status-codes";
+import { setAuthTokenToCookie } from "../../utils/setAuthToken";
 
 const credentialLogin = catchAsync(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
     const loggedInUser = await authService.credentialLogin(req.body);
 
-    res.cookie("accessToken", loggedInUser.accssToken, {
-      httpOnly: true,
-      secure: false,
-    });
-    res.cookie("refreshToken", loggedInUser.refreshToken, {
-      httpOnly: true,
-      secure: false,
-    });
+    setAuthTokenToCookie(res, loggedInUser);
+
     sendResponce(res, {
       success: true,
       statusCode: StatusCodes.OK,
@@ -32,6 +27,7 @@ const getNewAccessToken = catchAsync(
     const accessToken = await authService.getNewAccessToken(
       refreshToken as string
     );
+    setAuthTokenToCookie(res, accessToken);
     sendResponce(res, {
       success: true,
       statusCode: StatusCodes.OK,

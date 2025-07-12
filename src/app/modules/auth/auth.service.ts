@@ -1,15 +1,12 @@
 import { StatusCodes } from "http-status-codes";
 import AppError from "../../errorHelpers/AppError";
-import { IsActive, IUser } from "../user/user.interface";
+import { IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import bcrypt from "bcryptjs";
 import {
   createAccessTokenFromRefreshToken,
   createUserToken,
 } from "../../utils/userTokens";
-import { generateToken, verifyToken } from "../../utils/jwt";
-import { envVars } from "../../config/env";
-import { JwtPayload } from "jsonwebtoken";
 
 const credentialLogin = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
@@ -39,7 +36,7 @@ const credentialLogin = async (payload: Partial<IUser>) => {
   const { password: pass, ...rest } = isUserExist.toObject();
 
   return {
-    accssToken: token.accssToken,
+    accessToken: token.accssToken,
     refreshToken: token.refreshToken,
     user: rest,
   };
