@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import { PROCESSING } from "http-status-codes";
 
 dotenv.config();
 
@@ -9,6 +10,8 @@ interface EnvConfig {
   JWT_EXPIRES: string;
   JWT_ACCESS_TOKEN: string;
   SALT_ROUND: number;
+  SUPER_ADMIN_EMAIL: string;
+  SUPER_ADMIN_PASSWORD: string;
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -19,6 +22,8 @@ const loadEnvVariables = (): EnvConfig => {
     "JWT_EXPIRES",
     "JWT_ACCESS_TOKEN",
     "SALT_ROUND",
+    "SUPER_ADMIN_EMAIL",
+    "SUPER_ADMIN_PASSWORD",
   ];
 
   requiredEnvVariable.forEach((key) => {
@@ -38,6 +43,8 @@ const loadEnvVariables = (): EnvConfig => {
     JWT_EXPIRES: process.env.JWT_EXPIRES as string,
     JWT_ACCESS_TOKEN: process.env.JWT_ACCESS_TOKEN as string,
     SALT_ROUND: saltRound,
+    SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
+    SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
   };
 };
 
