@@ -1,27 +1,37 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-
 import { userServices } from "./user.services";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponce } from "../../utils/apiResponce";
-import { Types } from "mongoose";
 
-const createUser = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const user = await userServices.createUser(req.body);
+const createUser = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await userServices.createUser(req.body);
 
     sendResponce(res, {
       success: true,
-      statusCode: StatusCodes.CREATED,
-      message: " User Created successfully",
-      data: user,
+      statusCode: StatusCodes.OK,
+      message: " users Created successfully",
+      data: result,
     });
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    next(error);
   }
-};
+);
+const updateUser = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.id;
+    const token = req.user;
+    const result = await userServices.updateUser(userId, req.body, token);
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: " users Updated successfully",
+      data: result,
+    });
+  }
+);
 
 const getAllUsers = catchAsync(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -69,6 +79,7 @@ const deleteUser = catchAsync(
 export const userController = {
   createUser,
   getAllUsers,
+  updateUser,
   getSingleUser,
   deleteUser,
 };

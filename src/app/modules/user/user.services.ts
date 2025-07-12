@@ -1,20 +1,17 @@
-import { StatusCodes } from "http-status-codes";
-import { IAuthProvider, IUser } from "./user.interface";
+import httpStatus from "http-status-codes";
+import { IAuthProvider, IUser, Role } from "./user.interface";
 import { User } from "./user.model";
 import AppError from "../../errorHelpers/AppError";
-import bcrypt from "bcryptjs";
-import { envVars } from "../../config/env";
+import { hashPassword } from "../../utils/hashPassword";
+import { JwtPayload } from "jsonwebtoken";
 
 const createUser = async (payload: Partial<IUser>) => {
   const { email, password, ...rest } = payload;
   const isUserExist = await User.findOne({ email });
   if (isUserExist) {
-    throw new AppError(StatusCodes.BAD_REQUEST, "User already exist");
+    throw new AppError(httpStatus.BAD_REQUEST, "User already exist");
   }
-  const hashedPassword = await bcrypt.hash(
-    password as string,
-    envVars.SALT_ROUND
-  );
+  const hashedPassword = await hashPassword(password as string);
   const authProvider: IAuthProvider = {
     provider: "credentials",
     providerId: email as string,
@@ -28,6 +25,46 @@ const createUser = async (payload: Partial<IUser>) => {
   });
 
   return user;
+};
+const updateUser = async (
+  userId: string,
+  payload: Partial<IUser>,
+  verifiedToken: JwtPayload
+) => {
+  const isExist = await User.findById({ _id: userId });
+
+  if (!isExist) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found.");
+  }
+
+  if (payload.role) {
+    if (verifiedToken.role === Role.USER || verifiedToken.role === Role.GUIDE) {
+      throw new AppError(httpStatus.FORBIDDEN, "You are not authorized");
+    }
+
+    if (
+      payload.role === Role.SUPER_ADMIN &&
+      verifiedToken.role === Role.ADMIN
+    ) {
+      throw new AppError(httpStatus.FORBIDDEN, "You are not authorized");
+    }
+  }
+
+  if (payload.isActive || payload.isDeleted || payload.isVerified) {
+    if (verifiedToken.role === Role.USER || verifiedToken.role === Role.GUIDE) {
+      throw new AppError(httpStatus.FORBIDDEN, "You are not authorized");
+    }
+  }
+
+  if (payload.password) {
+    payload.password = await hashPassword(payload.password);
+  }
+  const newUpdatedUser = await User.findByIdAndUpdate(userId, payload, {
+    new: true,
+    runValidators: true,
+  });
+
+  return newUpdatedUser;
 };
 
 const getAllUser = async () => {
@@ -46,13 +83,14 @@ const getSingleUser = async (id: string) => {
   return user;
 };
 const deleleUser = async (id: string) => {
-  const result = await User.findOneAndDelete(id);
+  const result = await User.findOneAndDelete({ id });
   return result;
 };
 
 export const userServices = {
   createUser,
   getAllUser,
+  updateUser,
   getSingleUser,
   deleleUser,
 };
