@@ -3,6 +3,8 @@ import AppError from "../../errorHelpers/AppError";
 import { IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import bcrypt from "bcryptjs";
+import { generateToken } from "../../utils/jwt";
+import { envVars } from "../../config/env";
 
 const credentialLogin = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
@@ -26,8 +28,20 @@ const credentialLogin = async (payload: Partial<IUser>) => {
     );
   }
 
+  const JwtPayload = {
+    userId: isUserExist._id,
+    role: isUserExist.role,
+    email,
+  };
+
+  const accssToken = generateToken(
+    JwtPayload,
+    envVars.JWT_ACCESS_TOKEN,
+    envVars.JWT_EXPIRES
+  );
+
   return {
-    email: isUserExist.email,
+    token: accssToken,
   };
 };
 
