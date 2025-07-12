@@ -24,7 +24,7 @@ export const checkAuth =
           "You are not allowed to check the route."
         );
       }
-      // req.user = isVerified
+      req.user = isVerified;
       next();
     } catch (error) {
       next(error);
