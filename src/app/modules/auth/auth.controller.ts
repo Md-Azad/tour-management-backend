@@ -36,6 +36,21 @@ const getNewAccessToken = catchAsync(
     });
   }
 );
+const resetPassword = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const newPassword = req.body.newPassword;
+    const oldPassword = req.body.oldPassword;
+    const decodedUser = req.user;
+    await authService.resetPassword(newPassword, oldPassword, decodedUser);
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: "Password has been updated.",
+      data: null,
+    });
+  }
+);
 const logout = catchAsync(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
@@ -62,4 +77,5 @@ export const authController = {
   credentialLogin,
   getNewAccessToken,
   logout,
+  resetPassword,
 };
