@@ -4,6 +4,9 @@ import { authService } from "./auth.service";
 import { sendResponce } from "../../utils/apiResponce";
 import { StatusCodes } from "http-status-codes";
 import { setAuthTokenToCookie } from "../../utils/setAuthToken";
+import AppError from "../../errorHelpers/AppError";
+import { createUserToken } from "../../utils/userTokens";
+import { envVars } from "../../config/env";
 
 const credentialLogin = catchAsync(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -72,10 +75,26 @@ const logout = catchAsync(
     });
   }
 );
+const googleCallBack = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    if (!user) {
+      throw new AppError(StatusCodes.NOT_FOUND, "User did not found.");
+    }
+
+    const tokens = createUserToken(user);
+
+    setAuthTokenToCookie(res, tokens);
+
+    res.redirect(envVars.FRONTEND_URL);
+  }
+);
 
 export const authController = {
   credentialLogin,
   getNewAccessToken,
   logout,
   resetPassword,
+  googleCallBack,
 };
