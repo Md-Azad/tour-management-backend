@@ -79,6 +79,12 @@ const googleCallBack = catchAsync(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
+    let redirectTo = req.query.state ? (req.query.state as string) : "";
+
+    if (redirectTo.startsWith("/")) {
+      redirectTo = redirectTo.slice(1);
+    }
+
     if (!user) {
       throw new AppError(StatusCodes.NOT_FOUND, "User did not found.");
     }
@@ -87,7 +93,7 @@ const googleCallBack = catchAsync(
 
     setAuthTokenToCookie(res, tokens);
 
-    res.redirect(envVars.FRONTEND_URL);
+    res.redirect(`${envVars.FRONTEND_URL}/${redirectTo}`);
   }
 );
 

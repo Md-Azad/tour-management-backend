@@ -18,11 +18,12 @@ router.post(
 router.get(
   "/google",
   async (req: Request, res: Response, next: NextFunction) => {
-    passport.authenticate("google", { scope: ["profile", "email"] })(
-      req,
-      res,
-      next
-    );
+    const redirectTo = req.query.redirect;
+
+    passport.authenticate("google", {
+      scope: ["profile", "email"],
+      state: redirectTo as string,
+    })(req, res, next);
   }
 );
 
