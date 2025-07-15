@@ -18,6 +18,9 @@ export const globalErrorHandler = (
 
     statusCode = 400;
     message = `${matchedEmail} already exists`;
+  } else if (err.name === "CastError") {
+    statusCode = 400;
+    message = "Invalid mongoDB objectId. please provide valid ObjectId";
   } else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
