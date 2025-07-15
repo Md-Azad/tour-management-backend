@@ -13,8 +13,12 @@ export const globalErrorHandler = (
 ) => {
   let statusCode = 500;
   let message = ` Something went wrong`;
+  if (err.code === 11000) {
+    const matchedEmail = err.keyValue.email;
 
-  if (err instanceof AppError) {
+    statusCode = 400;
+    message = `${matchedEmail} already exists`;
+  } else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
   } else if (err instanceof Error) {

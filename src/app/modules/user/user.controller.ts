@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { userServices } from "./user.services";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponce } from "../../utils/apiResponce";
+import { JwtPayload } from "jsonwebtoken";
 
 const createUser = catchAsync(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -22,7 +23,11 @@ const updateUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.id;
     const token = req.user;
-    const result = await userServices.updateUser(userId, req.body, token);
+    const result = await userServices.updateUser(
+      userId,
+      req.body,
+      token as JwtPayload
+    );
 
     sendResponce(res, {
       success: true,
