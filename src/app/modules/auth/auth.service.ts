@@ -39,7 +39,7 @@ const credentialLogin = async (payload: Partial<IUser>) => {
   const { password: pass, ...rest } = isUserExist.toObject();
 
   return {
-    accessToken: token.accssToken,
+    accessToken: token.accessToken,
     refreshToken: token.refreshToken,
     user: rest,
   };
