@@ -13,7 +13,7 @@ export const createUserToken = (user: Partial<IUser>) => {
     email: user.email,
   };
 
-  const accssToken = generateToken(
+  const accessToken = generateToken(
     JwtPayload,
     envVars.JWT_ACCESS_TOKEN,
     envVars.JWT_EXPIRES
@@ -26,7 +26,7 @@ export const createUserToken = (user: Partial<IUser>) => {
   );
 
   return {
-    accssToken,
+    accessToken,
     refreshToken,
   };
 };
