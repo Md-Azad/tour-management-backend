@@ -13,6 +13,12 @@ router.post(
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   divisionController.createDivision
 );
+
+router.patch(
+  "/:id",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  divisionController.updateDivision
+);
 router.get("/", divisionController.getAllDivision);
 router.get("/:slug", divisionController.getSingleDivision);
 

@@ -45,8 +45,32 @@ const getSingleDivision = async (slug: string) => {
   };
 };
 
+const updateDivision = async (id: string, payload: Partial<IDivision>) => {
+  const isExistById = await Division.findById(id);
+  if (!isExistById) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Division is not found.");
+  }
+  const duplicateDivision = await Division.findOne({
+    name: payload.name,
+    _id: { $ne: id },
+  });
+  const slug = payload.name?.split(" ").join("-") as string;
+  payload.slug = slug.toLowerCase();
+
+  if (duplicateDivision) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "Already has this Division.");
+  }
+  const updatedDivision = await Division.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+
+  return updatedDivision;
+};
+
 export const divisionServices = {
   createDivision,
   getSingleDivision,
   getAllDivision,
+  updateDivision,
 };
