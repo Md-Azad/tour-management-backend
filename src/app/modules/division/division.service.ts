@@ -19,6 +19,18 @@ const createDivision = async (payload: Partial<IDivision>) => {
   return division;
 };
 
+const getAllDivision = async () => {
+  const divisions = await Division.find({});
+  const count = await Division.countDocuments();
+
+  return {
+    divisions,
+    meta: {
+      total: count,
+    },
+  };
+};
+
 const getSingleDivision = async (slug: string) => {
   let inputSlug = slug?.split(" ").join("-") as string;
   inputSlug = inputSlug.toLowerCase();
@@ -36,4 +48,5 @@ const getSingleDivision = async (slug: string) => {
 export const divisionServices = {
   createDivision,
   getSingleDivision,
+  getAllDivision,
 };
