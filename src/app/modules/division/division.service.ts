@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import AppError from "../../errorHelpers/AppError";
 import { IDivision } from "./division.interface";
 import { Division } from "./division.model";
+import { makeSlug } from "../../utils/handleSlug";
 
 const createDivision = async (payload: Partial<IDivision>) => {
   const isExistDivision = await Division.findOne({ name: payload.name });
@@ -10,9 +11,8 @@ const createDivision = async (payload: Partial<IDivision>) => {
     throw new AppError(StatusCodes.BAD_REQUEST, "This name already taken.");
   }
 
-  const name = payload.name;
-  const slug = name?.split(" ").join("-") as string;
-  payload.slug = slug.toLowerCase();
+  const slug = makeSlug(payload.name as string);
+  payload.slug = slug;
 
   const division = await Division.create(payload);
 
@@ -54,8 +54,8 @@ const updateDivision = async (id: string, payload: Partial<IDivision>) => {
     name: payload.name,
     _id: { $ne: id },
   });
-  const slug = payload.name?.split(" ").join("-") as string;
-  payload.slug = slug.toLowerCase();
+  const createdSlug = makeSlug(payload.name as string);
+  payload.slug = createdSlug;
 
   if (duplicateDivision) {
     throw new AppError(StatusCodes.BAD_REQUEST, "Already has this Division.");
