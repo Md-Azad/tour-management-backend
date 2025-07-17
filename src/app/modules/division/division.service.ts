@@ -10,11 +10,30 @@ const createDivision = async (payload: Partial<IDivision>) => {
     throw new AppError(StatusCodes.BAD_REQUEST, "This name already taken.");
   }
 
+  const name = payload.name;
+  const slug = name?.split(" ").join("-") as string;
+  payload.slug = slug.toLowerCase();
+
   const division = await Division.create(payload);
 
   return division;
 };
 
+const getSingleDivision = async (slug: string) => {
+  let inputSlug = slug?.split(" ").join("-") as string;
+  inputSlug = inputSlug.toLowerCase();
+  const division = await Division.findOne({ slug: inputSlug });
+
+  if (!division) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Division is not found");
+  }
+
+  return {
+    data: division,
+  };
+};
+
 export const divisionServices = {
   createDivision,
+  getSingleDivision,
 };

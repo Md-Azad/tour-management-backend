@@ -6,6 +6,7 @@ import { StatusCodes } from "http-status-codes";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const createDivision = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
     const payload = req.body;
     const division = await divisionServices.createDivision(payload);
@@ -18,7 +19,19 @@ const createDivision = catchAsync(
     });
   }
 );
+const getSingleDivision = catchAsync(async (req: Request, res: Response) => {
+  const slug = req.params.slug;
+  const result = await divisionServices.getSingleDivision(slug);
+
+  sendResponce(res, {
+    statusCode: 200,
+    success: true,
+    message: "Divisions retrieved",
+    data: result.data,
+  });
+});
 
 export const divisionController = {
   createDivision,
+  getSingleDivision,
 };
