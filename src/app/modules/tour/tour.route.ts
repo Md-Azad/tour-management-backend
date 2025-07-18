@@ -15,5 +15,6 @@ router.post(
 );
 
 router.get("/tour-types", tourController.getAllTourType);
+router.get("/tour-types/:id", tourController.getSingleTourType);
 
 export const tourRouter = router;

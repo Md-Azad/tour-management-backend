@@ -18,8 +18,14 @@ const getAllTourType = async () => {
 
   return tourTypes;
 };
+const getSingleTourType = async (id: string) => {
+  const tourType = await TourType.findById(id);
+
+  return tourType;
+};
 
 export const tourTypeService = {
   createTourType,
   getAllTourType,
+  getSingleTourType,
 };
