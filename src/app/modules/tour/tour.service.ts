@@ -13,7 +13,13 @@ const createTourType = async (payload: ITourType) => {
 
   return tourType;
 };
+const getAllTourType = async () => {
+  const tourTypes = await TourType.find({});
+
+  return tourTypes;
+};
 
 export const tourTypeService = {
   createTourType,
+  getAllTourType,
 };
