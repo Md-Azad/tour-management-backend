@@ -16,7 +16,15 @@ router.post(
 
 router.get("/", tourController.getAllTourType);
 router.get("/:id", tourController.getSingleTourType);
-router.patch("/:id", tourController.updateTourType);
-router.delete("/:id", tourController.deleteTourType);
+router.patch(
+  "/:id",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  tourController.updateTourType
+);
+router.delete(
+  "/:id",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  tourController.deleteTourType
+);
 
 export const tourRouter = router;
