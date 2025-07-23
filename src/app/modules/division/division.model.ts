@@ -39,6 +39,8 @@ divisionSchema.pre("findOneAndUpdate", async function (next) {
     division.slug = createdSlug;
   }
 
+  this.setUpdate(division);
+
   next();
 });
 

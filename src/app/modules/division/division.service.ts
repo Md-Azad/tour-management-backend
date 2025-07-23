@@ -55,8 +55,8 @@ const updateDivision = async (id: string, payload: Partial<IDivision>) => {
   if (duplicateDivision) {
     throw new AppError(StatusCodes.BAD_REQUEST, "Already has this Division.");
   }
-  const createdSlug = makeSlug(payload.name as string);
-  payload.slug = createdSlug;
+  // const createdSlug = makeSlug(payload.name as string);
+  // payload.slug = createdSlug;
   const updatedDivision = await Division.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
