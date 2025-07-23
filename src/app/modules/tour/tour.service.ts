@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import AppError from "../../errorHelpers/AppError";
 import { ITourType } from "./tour.interface";
 import { TourType } from "./tour.model";
@@ -23,9 +24,36 @@ const getSingleTourType = async (id: string) => {
 
   return tourType;
 };
+const updateTourType = async (id: string, payload: ITourType) => {
+  const isTourTypeExist = await TourType.findById(id);
+  if (!isTourTypeExist) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Tour type did not find.");
+  }
+
+  const updatedTourType = await TourType.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+
+  return updatedTourType;
+};
+const deleteTourType = async (id: string) => {
+  const isTourTypeExist = await TourType.findById(id);
+  if (!isTourTypeExist) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Tour type did not find.");
+  }
+
+  const deletedTourType = await TourType.findByIdAndDelete(id);
+  if (!deletedTourType) {
+    throw new AppError(StatusCodes.NOT_MODIFIED, "Tour type did not delete.");
+  }
+
+  return deletedTourType.name;
+};
 
 export const tourTypeService = {
   createTourType,
   getAllTourType,
   getSingleTourType,
+  updateTourType,
+  deleteTourType,
 };

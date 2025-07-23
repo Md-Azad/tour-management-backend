@@ -14,7 +14,9 @@ router.post(
   tourController.createTourType
 );
 
-router.get("/tour-types", tourController.getAllTourType);
-router.get("/tour-types/:id", tourController.getSingleTourType);
+router.get("/", tourController.getAllTourType);
+router.get("/:id", tourController.getSingleTourType);
+router.patch("/:id", tourController.updateTourType);
+router.delete("/:id", tourController.deleteTourType);
 
 export const tourRouter = router;

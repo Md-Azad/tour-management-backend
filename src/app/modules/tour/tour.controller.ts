@@ -44,9 +44,38 @@ const getSingleTourType = catchAsync(
     });
   }
 );
+const updateTourType = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const payload = req.body;
+    const tourType = await tourTypeService.updateTourType(id, payload);
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: "tour type updated successfully.",
+      data: tourType,
+    });
+  }
+);
+const deleteTourType = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const tourType = await tourTypeService.deleteTourType(id);
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: `${tourType} type is deleted successfully.`,
+      data: null,
+    });
+  }
+);
 
 export const tourController = {
   createTourType,
   getAllTourType,
   getSingleTourType,
+  updateTourType,
+  deleteTourType,
 };
