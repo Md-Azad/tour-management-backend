@@ -1,5 +1,10 @@
-export const makeSlug = (name: string) => {
+export const makeSlug = (name: string, lastPart = "") => {
   const baseSlug = name.toLowerCase().split(" ").join("-") as string;
-  const slug = `${baseSlug}-division`;
-  return slug;
+
+  if (lastPart !== "") {
+    const slug = `${baseSlug}-${lastPart}`;
+    return slug;
+  }
+
+  return baseSlug;
 };

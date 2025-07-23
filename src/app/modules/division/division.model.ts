@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { IDivision } from "./division.interface";
+import { makeSlug } from "../../utils/handleSlug";
 
 export const divisionSchema = new Schema<IDivision>(
   {
@@ -24,9 +25,18 @@ export const divisionSchema = new Schema<IDivision>(
 
 divisionSchema.pre("save", async function (next) {
   if (this.isModified("name")) {
-    const baseSlug = this.name.toLowerCase().split(" ").join("-");
-    const slug = `${baseSlug}-division`;
-    this.slug = slug;
+    const createdSlug = makeSlug(this.name, "division");
+    this.slug = createdSlug;
+  }
+
+  next();
+});
+
+divisionSchema.pre("findOneAndUpdate", async function (next) {
+  const division = this.getUpdate() as Partial<IDivision>;
+  if (division.name) {
+    const createdSlug = makeSlug(division.name, "division");
+    division.slug = createdSlug;
   }
 
   next();
