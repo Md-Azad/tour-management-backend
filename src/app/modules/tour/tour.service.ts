@@ -73,6 +73,12 @@ const getAllTour = async () => {
   return tourTypes;
 };
 
+const getSingleTour = async (id: string) => {
+  const tourType = await Tour.findById(id);
+
+  return tourType;
+};
+
 const updateTour = async (id: string, payload: ITourType) => {
   const isTourExist = await Tour.findById(id);
   if (!isTourExist) {
@@ -96,4 +102,5 @@ export const tourTypeService = {
   createTour,
   updateTour,
   getAllTour,
+  getSingleTour,
 };
