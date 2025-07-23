@@ -43,5 +43,6 @@ router.patch(
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   tourController.updateTour
 );
+router.delete("/:id", tourController.deleteTour);
 
 export const tourRouter = router;
