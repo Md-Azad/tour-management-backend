@@ -14,17 +14,19 @@ router.post(
   tourController.createTourType
 );
 
-router.get("/", tourController.getAllTourType);
-router.get("/:id", tourController.getSingleTourType);
+router.get("/tour-types", tourController.getAllTourType);
+router.get("/tour-types/:id", tourController.getSingleTourType);
 router.patch(
-  "/:id",
+  "/tour-types/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   tourController.updateTourType
 );
 router.delete(
-  "/:id",
+  "/tour-types/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   tourController.deleteTourType
 );
+
+// router.post("/");
 
 export const tourRouter = router;

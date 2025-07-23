@@ -50,10 +50,27 @@ const deleteTourType = async (id: string) => {
   return deletedTourType.name;
 };
 
+// ----------------------------------------
+
+// Tour related Apis
+
+const createTour = async (payload: ITourType) => {
+  const isTourExist = await TourType.findOne({ name: payload.name });
+
+  if (isTourExist) {
+    throw new AppError(409, "This tour is already exists.");
+  }
+
+  const tourType = await TourType.create(payload);
+
+  return tourType;
+};
+
 export const tourTypeService = {
   createTourType,
   getAllTourType,
   getSingleTourType,
   updateTourType,
   deleteTourType,
+  createTour,
 };

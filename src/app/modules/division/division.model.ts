@@ -22,4 +22,14 @@ export const divisionSchema = new Schema<IDivision>(
   { timestamps: true, versionKey: false }
 );
 
+divisionSchema.pre("save", async function (next) {
+  if (this.isModified("name")) {
+    const baseSlug = this.name.toLowerCase().split(" ").join("-");
+    const slug = `${baseSlug}-division`;
+    this.slug = slug;
+  }
+
+  next();
+});
+
 export const Division = model<IDivision>("Division", divisionSchema);

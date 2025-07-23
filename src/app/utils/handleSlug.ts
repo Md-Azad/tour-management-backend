@@ -1,4 +1,5 @@
 export const makeSlug = (name: string) => {
-  const slug = name.toLowerCase().split(" ").join("-") as string;
+  const baseSlug = name.toLowerCase().split(" ").join("-") as string;
+  const slug = `${baseSlug}-division`;
   return slug;
 };
