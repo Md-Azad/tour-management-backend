@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { divisionController } from "./division.controller";
 import { validation } from "../../middlewares/responceValidation";
-import { createDivisionSchema } from "./division.validation";
+import {
+  createDivisionSchema,
+  updateDivisionSchema,
+} from "./division.validation";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
 
@@ -17,6 +20,7 @@ router.post(
 router.patch(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  validation(updateDivisionSchema),
   divisionController.updateDivision
 );
 router.delete(

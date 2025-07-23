@@ -1,6 +1,4 @@
 export const makeSlug = (name: string) => {
-  let slug = name?.split(" ").join("-") as string;
-  slug = slug.toLowerCase();
-
+  const slug = name.toLowerCase().split(" ").join("-") as string;
   return slug;
 };
