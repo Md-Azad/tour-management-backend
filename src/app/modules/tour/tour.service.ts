@@ -32,6 +32,7 @@ const updateTourType = async (id: string, payload: ITourType) => {
 
   const updatedTourType = await TourType.findByIdAndUpdate(id, payload, {
     new: true,
+    runValidators: true,
   });
 
   return updatedTourType;
@@ -66,6 +67,26 @@ const createTour = async (payload: ITour) => {
   return tour;
 };
 
+const getAllTour = async () => {
+  const tourTypes = await Tour.find({});
+
+  return tourTypes;
+};
+
+const updateTour = async (id: string, payload: ITourType) => {
+  const isTourExist = await Tour.findById(id);
+  if (!isTourExist) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Tour did not find.");
+  }
+
+  const updatedTourType = await Tour.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+
+  return updatedTourType;
+};
+
 export const tourTypeService = {
   createTourType,
   getAllTourType,
@@ -73,4 +94,6 @@ export const tourTypeService = {
   updateTourType,
   deleteTourType,
   createTour,
+  updateTour,
+  getAllTour,
 };

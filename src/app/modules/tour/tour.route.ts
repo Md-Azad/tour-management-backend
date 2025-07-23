@@ -36,5 +36,11 @@ router.post(
   validation(createTourZodSchema),
   tourController.createTour
 );
+router.get("/", tourController.getAllTour);
+router.patch(
+  "/:id",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  tourController.updateTour
+);
 
 export const tourRouter = router;
