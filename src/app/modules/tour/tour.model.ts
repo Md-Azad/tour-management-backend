@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { ITour, ITourType } from "./tour.interface";
+import { makeSlug } from "../../utils/handleSlug";
 
 const tourTypeSchema = new Schema<ITourType>(
   {
@@ -47,5 +48,15 @@ const tourSchema = new Schema<ITour>(
     versionKey: false,
   }
 );
+
+tourSchema.pre("save", async function (next) {
+  if (this.isModified("title")) {
+    const createdSlug = makeSlug(this.title);
+
+    this.slug = createdSlug;
+  }
+
+  next();
+});
 
 export const Tour = model<ITour>("Tour", tourSchema);

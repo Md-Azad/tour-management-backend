@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import AppError from "../../errorHelpers/AppError";
-import { ITourType } from "./tour.interface";
-import { TourType } from "./tour.model";
+import { ITour, ITourType } from "./tour.interface";
+import { Tour, TourType } from "./tour.model";
 
 const createTourType = async (payload: ITourType) => {
   const isTourTypeExist = await TourType.findOne({ name: payload.name });
@@ -54,16 +54,16 @@ const deleteTourType = async (id: string) => {
 
 // Tour related Apis
 
-const createTour = async (payload: ITourType) => {
-  const isTourExist = await TourType.findOne({ name: payload.name });
+const createTour = async (payload: ITour) => {
+  const isTourExist = await Tour.findOne({ title: payload.title });
 
   if (isTourExist) {
     throw new AppError(409, "This tour is already exists.");
   }
 
-  const tourType = await TourType.create(payload);
+  const tour = await Tour.create(payload);
 
-  return tourType;
+  return tour;
 };
 
 export const tourTypeService = {

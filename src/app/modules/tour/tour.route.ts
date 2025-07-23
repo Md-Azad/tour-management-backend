@@ -3,7 +3,10 @@ import { tourController } from "./tour.controller";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
 import { validation } from "../../middlewares/responceValidation";
-import { createTourTypeZodSchema } from "./tour.validation";
+import {
+  createTourTypeZodSchema,
+  createTourZodSchema,
+} from "./tour.validation";
 
 const router = Router();
 
@@ -27,6 +30,11 @@ router.delete(
   tourController.deleteTourType
 );
 
-// router.post("/");
+router.post(
+  "/",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  validation(createTourZodSchema),
+  tourController.createTour
+);
 
 export const tourRouter = router;
