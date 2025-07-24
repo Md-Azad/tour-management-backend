@@ -91,13 +91,18 @@ const createTour = catchAsync(
 
 const getAllTour = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const tours = await tourTypeService.getAllTour();
+    const filter = req.query;
+
+    const result = await tourTypeService.getAllTour(
+      filter as Record<string, string>
+    );
 
     sendResponce(res, {
       success: true,
       statusCode: StatusCodes.OK,
       message: "tour updated successfully.",
-      data: tours,
+      data: result.data,
+      meta: result.meta,
     });
   }
 );
