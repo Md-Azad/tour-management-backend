@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import AppError from "../../errorHelpers/AppError";
 import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
+import { searchConstant } from "./tour.constant";
 
 const createTourType = async (payload: ITourType) => {
   const isTourTypeExist = await TourType.findOne({ name: payload.name });
@@ -73,8 +74,6 @@ const getAllTour = async (filters: Record<string, string>) => {
   const searchTerm = filters.searchTerm || "";
 
   delete filter.searchTerm;
-
-  const searchConstant = ["title", "location", "description"];
 
   const searchQeury = {
     $or: searchConstant.map((field) => ({
