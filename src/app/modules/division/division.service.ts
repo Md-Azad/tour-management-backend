@@ -11,9 +11,6 @@ const createDivision = async (payload: Partial<IDivision>) => {
     throw new AppError(StatusCodes.BAD_REQUEST, "This name already taken.");
   }
 
-  const slug = makeSlug(payload.name as string);
-  payload.slug = slug;
-
   const division = await Division.create(payload);
 
   return division;
@@ -54,12 +51,11 @@ const updateDivision = async (id: string, payload: Partial<IDivision>) => {
     name: payload.name,
     _id: { $ne: id },
   });
-  const createdSlug = makeSlug(payload.name as string);
-  payload.slug = createdSlug;
 
   if (duplicateDivision) {
     throw new AppError(StatusCodes.BAD_REQUEST, "Already has this Division.");
   }
+
   const updatedDivision = await Division.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,

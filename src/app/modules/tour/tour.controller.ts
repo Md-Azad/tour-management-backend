@@ -72,10 +72,86 @@ const deleteTourType = catchAsync(
   }
 );
 
+// ------------------ Tour related controllers ----------------
+
+const createTour = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const payload = req.body;
+
+    const tour = await tourTypeService.createTour(payload);
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: "Tour has been created",
+      data: tour,
+    });
+  }
+);
+
+const getAllTour = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const tours = await tourTypeService.getAllTour();
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: "tour updated successfully.",
+      data: tours,
+    });
+  }
+);
+const getSingleTour = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const tour = await tourTypeService.getSingleTour(id);
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: "Retrieved single tour",
+      data: tour,
+    });
+  }
+);
+const updateTour = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const payload = req.body;
+    const tourType = await tourTypeService.updateTour(id, payload);
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: "tour updated successfully.",
+      data: tourType,
+    });
+  }
+);
+
+const deleteTour = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const tour = await tourTypeService.deleteTour(id);
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: `${tour}  is deleted successfully.`,
+      data: null,
+    });
+  }
+);
+
 export const tourController = {
   createTourType,
   getAllTourType,
   getSingleTourType,
   updateTourType,
   deleteTourType,
+  createTour,
+  updateTour,
+  getAllTour,
+  getSingleTour,
+  deleteTour,
 };
