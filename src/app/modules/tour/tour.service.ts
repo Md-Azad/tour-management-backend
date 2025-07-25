@@ -69,11 +69,12 @@ const createTour = async (payload: ITour) => {
   return tour;
 };
 
-const getAllTour = async (filters: Record<string, string>) => {
-  const filter = filters;
+const getAllTour = async (query: Record<string, string>) => {
+  const filter = query;
 
-  const searchTerm = filters.searchTerm || "";
-  const sort = filters.sort || "-createdAt";
+  const searchTerm = query.searchTerm || "";
+  const sort = query.sort || "-createdAt";
+  const fields = query.fields.split(",").join(" ") || "";
 
   for (const field of excludedFields) {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
@@ -86,7 +87,10 @@ const getAllTour = async (filters: Record<string, string>) => {
     })),
   };
 
-  const tours = await Tour.find(searchQeury).find(filter).sort(sort);
+  const tours = await Tour.find(searchQeury)
+    .find(filter)
+    .sort(sort)
+    .select(fields);
 
   const total = await Tour.countDocuments();
 
