@@ -2,6 +2,10 @@ import { StatusCodes } from "http-status-codes";
 import AppError from "../../errorHelpers/AppError";
 import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
+import { searchConstant } from "./tour.constant";
+import { excludedFields } from "../../globalConstant";
+import { Query } from "mongoose";
+import { queryBuilder } from "../../utils/queryBuilder";
 
 const createTourType = async (payload: ITourType) => {
   const isTourTypeExist = await TourType.findOne({ name: payload.name });
@@ -67,11 +71,70 @@ const createTour = async (payload: ITour) => {
   return tour;
 };
 
-const getAllTour = async () => {
-  const tourTypes = await Tour.find({});
+const getAllTour = async (query: Record<string, string>) => {
+  const searchBuilder = new queryBuilder(Tour.find(), query);
 
-  return tourTypes;
+  const tours = await searchBuilder
+    .search(searchConstant)
+    .filter()
+    .sort()
+    .fields()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    tours.build(),
+    searchBuilder.getMeta(),
+  ]);
+
+  return {
+    data,
+    meta,
+  };
 };
+// const getAllTourOld = async (query: Record<string, string>) => {
+//   const filter = query;
+
+//   const searchTerm = query.searchTerm || "";
+//   const sort = query.sort || "-createdAt";
+//   const fields = query?.fields?.split(",").join(" ") || "";
+
+//   const page = Number(query.page) || 1;
+//   const limit = Number(query.limit) || 10;
+
+//   const skip = (page - 1) * limit;
+
+//   for (const field of excludedFields) {
+//     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+//     delete filter[field];
+//   }
+
+//   const searchQeury = {
+//     $or: searchConstant.map((field) => ({
+//       [field]: { $regex: searchTerm, $options: "i" },
+//     })),
+//   };
+
+//   const tours = await Tour.find(searchQeury)
+//     .find(filter)
+//     .sort(sort)
+//     .select(fields)
+//     .skip(skip)
+//     .limit(limit);
+
+//   const total = await Tour.countDocuments();
+
+//   const meta = {
+//     page,
+//     limit,
+//     totalData: total,
+//     totalPage: Math.ceil(total / limit),
+//   };
+
+//   return {
+//     data: tours,
+//     meta: meta,
+//   };
+// };
 
 const getSingleTour = async (id: string) => {
   const tourType = await Tour.findById(id);
