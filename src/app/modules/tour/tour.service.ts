@@ -74,11 +74,21 @@ const createTour = async (payload: ITour) => {
 const getAllTour = async (query: Record<string, string>) => {
   const searchBuilder = new queryBuilder(Tour.find(), query);
 
-  const tours = await searchBuilder.search(searchConstant).filter().modelQuery;
+  const tours = await searchBuilder
+    .search(searchConstant)
+    .filter()
+    .sort()
+    .fields()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    searchBuilder.build(),
+    searchBuilder.getMeta(),
+  ]);
 
   return {
-    data: tours,
-    // meta: meta,
+    data,
+    meta,
   };
 };
 // const getAllTourOld = async (query: Record<string, string>) => {

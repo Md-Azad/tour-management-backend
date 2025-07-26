@@ -102,7 +102,7 @@ const getAllTour = catchAsync(
       statusCode: StatusCodes.OK,
       message: "tour updated successfully.",
       data: result.data,
-      //   meta: result.meta,
+      meta: result.meta,
     });
   }
 );
