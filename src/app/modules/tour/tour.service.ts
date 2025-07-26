@@ -82,7 +82,7 @@ const getAllTour = async (query: Record<string, string>) => {
     .paginate();
 
   const [data, meta] = await Promise.all([
-    searchBuilder.build(),
+    tours.build(),
     searchBuilder.getMeta(),
   ]);
 
