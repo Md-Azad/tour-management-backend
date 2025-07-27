@@ -16,6 +16,7 @@ router.post(
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   divisionController.createDivision
 );
+router.get("/", divisionController.getAllDivision);
 
 router.patch(
   "/:id",
@@ -28,7 +29,6 @@ router.delete(
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   divisionController.deleteDivision
 );
-router.get("/", divisionController.getAllDivision);
 router.get("/:slug", divisionController.getSingleDivision);
 
 export const divisionRouter = router;
