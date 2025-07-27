@@ -1,13 +1,7 @@
-import { model, Schema, Types } from "mongoose";
+import { model, Schema } from "mongoose";
 import { BOOKING_STATUS, IBooking } from "./booking.interface";
-import { object } from "zod";
 
 export const bookingSchema = new Schema<IBooking>({
-  //  user: Types.ObjectId;
-  //   tour: Types.ObjectId;
-  //   payment?: Types.ObjectId;
-  //   guestCount: number;
-  //   status: BOOKING_STATUS;
   user: {
     type: Schema.Types.ObjectId,
     ref: "User",
