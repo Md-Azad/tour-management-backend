@@ -13,8 +13,9 @@ const createBooking = catchAsync(
       req.body,
       decodedToken.userId as string
     );
+
     sendResponce(res, {
-      statusCode: StatusCodes.OK,
+      statusCode: StatusCodes.CREATED,
       success: true,
       message: `Your booking has been created`,
       data: booking,
