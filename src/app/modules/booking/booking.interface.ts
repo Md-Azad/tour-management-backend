@@ -5,6 +5,7 @@ export enum BOOKING_STATUS {
   CANCEL = "CANCEL",
   COMPLETE = "COMPLETE",
   FAILED = "FAILED",
+  UNPAID = "UNPAID",
 }
 
 export interface IBooking {

@@ -53,6 +53,9 @@ const userSchema = new Schema<IUser>(
       enum: Object.values(IsActive),
       default: IsActive.ACTIVE,
     },
+    address: {
+      type: String,
+    },
     isVerified: {
       type: Boolean,
       default: false,
