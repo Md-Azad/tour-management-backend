@@ -21,8 +21,8 @@ interface EnvConfig {
   SSL: {
     STORE_ID: string;
     STORE_PASS: string;
-    PAYMENT_API: string;
-    VALIDATION_API: string;
+    SSL_PAYMENT_API: string;
+    SSL_VALIDATION_API: string;
     SSL_SUCCESS_FRONTEND_URL: string;
     SSL_FAIL_FRONTEND_URL: string;
     SSL_CANCEL_FRONTEND_URL: string;
@@ -49,10 +49,10 @@ const loadEnvVariables = (): EnvConfig => {
     "GOOGLE_CALLBACK_URL",
     "FRONTEND_URL",
     "EXPRESS_SESSION_SECRET",
-    "STORE_ID",
-    "STORE_PASS",
-    "PAYMENT_API",
-    "VALIDATION_API",
+    "SSL_STORE_ID",
+    "SSL_STORE_PASS",
+    "SSL_PAYMENT_API",
+    "SSL_VALIDATION_API",
     "SSL_SUCCESS_FRONTEND_URL",
     "SSL_FAIL_FRONTEND_URL",
     "SSL_CANCEL_FRONTEND_URL",
@@ -90,8 +90,8 @@ const loadEnvVariables = (): EnvConfig => {
     SSL: {
       STORE_ID: process.env.SSL_STORE_ID as string,
       STORE_PASS: process.env.SSL_STORE_PASS as string,
-      PAYMENT_API: process.env.SSL_PAYMENT_API as string,
-      VALIDATION_API: process.env.SSL_VALIDATION_API as string,
+      SSL_PAYMENT_API: process.env.SSL_PAYMENT_API as string,
+      SSL_VALIDATION_API: process.env.SSL_VALIDATION_API as string,
       SSL_SUCCESS_FRONTEND_URL: process.env.SSL_SUCCESS_FRONTEND_URL as string,
       SSL_FAIL_FRONTEND_URL: process.env.SSL_FAIL_FRONTEND_URL as string,
       SSL_CANCEL_FRONTEND_URL: process.env.SSL_CANCEL_FRONTEND_URL as string,
