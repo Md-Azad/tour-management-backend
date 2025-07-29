@@ -13,13 +13,13 @@ const successPayment = async (query: Record<string, string>) => {
     const updatedPayment = await Payment.findOneAndUpdate(
       { transactionId: query.transactionId },
       { status: PAYMENT_STATUS.PAID },
-      { new: true, runValidators: true, session: session }
+      { runValidators: true, session: session }
     );
 
     await Booking.findByIdAndUpdate(
       updatedPayment?.booking,
       { status: BOOKING_STATUS.CONFIRM },
-      { new: true, runValidators: true, session }
+      { runValidators: true, session }
     );
 
     await session.commitTransaction();
@@ -34,13 +34,68 @@ const successPayment = async (query: Record<string, string>) => {
     throw error;
   }
 };
-const failPayment = () => {
+const failPayment = async (query: Record<string, string>) => {
   // update booking status to 'FAIL'
   // Update booking status to "FAIL"
+
+  const session = await Booking.startSession();
+  session.startTransaction();
+
+  try {
+    const updatedPayment = await Payment.findOneAndUpdate(
+      { transactionId: query.transactionId },
+      { status: PAYMENT_STATUS.FAILED },
+      { runValidators: true, session: session }
+    );
+
+    await Booking.findByIdAndUpdate(
+      updatedPayment?.booking,
+      { status: BOOKING_STATUS.FAILED },
+      { runValidators: true, session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+    return {
+      success: false,
+      message: "Payment Failed.",
+    };
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
 };
-const cancelPayment = () => {
+const cancelPayment = async (query: Record<string, string>) => {
   // update booking status to 'CANCEL'
   // Update booking status to "CANCEL"
+  const session = await Booking.startSession();
+  session.startTransaction();
+
+  try {
+    const updatedPayment = await Payment.findOneAndUpdate(
+      { transactionId: query.transactionId },
+      { status: PAYMENT_STATUS.CANCELLED },
+      { runValidators: true, session: session }
+    );
+
+    await Booking.findByIdAndUpdate(
+      updatedPayment?.booking,
+      { status: BOOKING_STATUS.CANCEL },
+      { runValidators: true, session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+    return {
+      success: false,
+      message: "Payment canceled.",
+    };
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
 };
 
 export const paymentService = {
