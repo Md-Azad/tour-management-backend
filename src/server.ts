@@ -13,7 +13,7 @@ const startServer = async () => {
     console.log("Connected to database");
 
     server = app.listen(5001, () => {
-      console.log("Server is listening to port 5000");
+      console.log("Server is listening to port 5001");
     });
   } catch (error) {
     console.log(error);
