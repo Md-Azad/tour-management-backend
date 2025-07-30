@@ -3,8 +3,7 @@ import AppError from "../../errorHelpers/AppError";
 import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
 import { searchConstant } from "./tour.constant";
-import { excludedFields } from "../../globalConstant";
-import { Query } from "mongoose";
+
 import { queryBuilder } from "../../utils/queryBuilder";
 
 const createTourType = async (payload: ITourType) => {
