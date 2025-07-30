@@ -3,12 +3,16 @@ import { catchAsync } from "../../utils/catchAsync";
 import { divisionServices } from "./division.service";
 import { sendResponce } from "../../utils/apiResponce";
 import { StatusCodes } from "http-status-codes";
+import { IDivision } from "./division.interface";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const createDivision = catchAsync(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
-    const payload = req.body;
+    const payload: IDivision = {
+      ...req.body,
+      thumbnail: req.file?.path,
+    };
     const division = await divisionServices.createDivision(payload);
 
     sendResponce(res, {
