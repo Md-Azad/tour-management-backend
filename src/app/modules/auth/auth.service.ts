@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { StatusCodes } from "http-status-codes";
 import AppError from "../../errorHelpers/AppError";
-import { IUser } from "../user/user.interface";
+import { IAuthProvider, IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import bcrypt from "bcryptjs";
 import {
@@ -56,7 +56,10 @@ const resetPassword = async (
   oldPassword: string,
   decodedUser: JwtPayload
 ) => {
-  const user = await User.findById({ _id: decodedUser.userId });
+  const user = await User.findById(decodedUser.userId);
+  if (!user) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "User is not found.");
+  }
   const isOldPasswordMatch = await bcrypt.compare(
     oldPassword,
     user!.password as string
@@ -67,13 +70,39 @@ const resetPassword = async (
   }
   const hashedNewPassword = await hashPassword(newPassword);
 
-  user!.password = hashedNewPassword;
+  user.password = hashedNewPassword;
 
   user?.save();
+};
+const setPassword = async (userId: string, plainPassword: string) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "User is not found.");
+  }
+
+  if (user.password && user.auths.some((pro) => pro.provider === "gmail")) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      "You already set password. You can reset Password now"
+    );
+  }
+  const credantialProvider: IAuthProvider = {
+    provider: "credentials",
+    providerId: user.email,
+  };
+  const hashedNewPassword = await hashPassword(plainPassword);
+  const auths = [...user.auths, credantialProvider];
+
+  user.password = hashedNewPassword;
+  user.auths = auths;
+
+  user.save();
 };
 
 export const authService = {
   credentialLogin,
   getNewAccessToken,
   resetPassword,
+  setPassword,
 };

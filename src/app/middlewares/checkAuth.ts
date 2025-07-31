@@ -11,7 +11,8 @@ export const checkAuth =
   (...authRules: string[]) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // const accessToken = req.headers.authorization;
+      // const accessTokena = req.headers.authorization;
+
       const accessToken = req.cookies.accessToken;
 
       if (!accessToken) {
