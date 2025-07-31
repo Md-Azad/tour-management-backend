@@ -8,7 +8,7 @@ import { StatusCodes } from "http-status-codes";
 const initPayment = catchAsync(async (req: Request, res: Response) => {
   const bookingId = req.params.bookingId;
 
-  const result = await paymentService.initPayment(bookingId);
+  const result = await paymentService.initPayment(bookingId as string);
 
   sendResponce(res, {
     statusCode: StatusCodes.CREATED,

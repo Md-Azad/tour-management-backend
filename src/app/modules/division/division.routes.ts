@@ -7,13 +7,15 @@ import {
 } from "./division.validation";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
+import { multerUpload } from "../../config/multer.config";
 
 const router = Router();
 
 router.post(
   "/create-division",
-  validation(createDivisionSchema),
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  multerUpload.single("file"),
+  validation(createDivisionSchema),
   divisionController.createDivision
 );
 router.get("/", divisionController.getAllDivision);
@@ -21,7 +23,9 @@ router.get("/", divisionController.getAllDivision);
 router.patch(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  multerUpload.single("file"),
   validation(updateDivisionSchema),
+
   divisionController.updateDivision
 );
 router.delete(

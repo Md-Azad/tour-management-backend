@@ -4,6 +4,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import { tourTypeService } from "./tour.service";
 import { sendResponce } from "../../utils/apiResponce";
 import { StatusCodes } from "http-status-codes";
+import multer from "multer";
 
 const createTourType = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -76,7 +77,10 @@ const deleteTourType = catchAsync(
 
 const createTour = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const payload = req.body;
+    const payload = {
+      ...req.body,
+      images: (req.files as Express.Multer.File[]).map((file) => file.path),
+    };
 
     const tour = await tourTypeService.createTour(payload);
 
@@ -122,7 +126,10 @@ const getSingleTour = catchAsync(
 const updateTour = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    const payload = req.body;
+    const payload = {
+      ...req.body,
+      images: (req.files as Express.Multer.File[]).map((file) => file.path),
+    };
     const tourType = await tourTypeService.updateTour(id, payload);
 
     sendResponce(res, {
