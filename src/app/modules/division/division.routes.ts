@@ -23,7 +23,9 @@ router.get("/", divisionController.getAllDivision);
 router.patch(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  multerUpload.single("file"),
   validation(updateDivisionSchema),
+
   divisionController.updateDivision
 );
 router.delete(

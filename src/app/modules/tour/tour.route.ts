@@ -6,6 +6,7 @@ import { validation } from "../../middlewares/responceValidation";
 import {
   createTourTypeZodSchema,
   createTourZodSchema,
+  updateTourZodSchema,
 } from "./tour.validation";
 import { multerUpload } from "../../config/multer.config";
 
@@ -43,6 +44,8 @@ router.get("/:id", tourController.getSingleTour);
 router.patch(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  multerUpload.array("files"),
+  validation(updateTourZodSchema),
   tourController.updateTour
 );
 router.delete("/:id", tourController.deleteTour);

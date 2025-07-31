@@ -61,7 +61,10 @@ const deleteDivision = catchAsync(async (req: Request, res: Response) => {
 const updateDivision = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
 
-  const payload = req.body;
+  const payload = {
+    ...req.body,
+    thumbnail: req.file?.path,
+  };
 
   const updatedDivision = await divisionServices.updateDivision(id, payload);
 
