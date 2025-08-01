@@ -66,6 +66,20 @@ const getSingleUser = catchAsync(
     });
   }
 );
+const getMe = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+    const result = await userServices.getSingleUser(decodedToken.userId);
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: "Your Profile fetched successfully",
+      data: result,
+    });
+  }
+);
 const deleteUser = catchAsync(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
@@ -87,4 +101,5 @@ export const userController = {
   updateUser,
   getSingleUser,
   deleteUser,
+  getMe,
 };
