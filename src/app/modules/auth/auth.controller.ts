@@ -74,6 +74,21 @@ const resetPassword = catchAsync(
     });
   }
 );
+const forgetPassword = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { email } = req.body;
+
+    await authService.forgetPassword(email);
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: "Email sent successfully.",
+      data: null,
+    });
+  }
+);
 const setPassword = catchAsync(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: Request, res: Response, next: NextFunction) => {
@@ -141,4 +156,5 @@ export const authController = {
   resetPassword,
   googleCallBack,
   setPassword,
+  forgetPassword,
 };

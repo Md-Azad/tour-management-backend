@@ -28,7 +28,7 @@ interface sendemail {
   }[];
 }
 
-const sendEmail = async ({
+export const sendEmail = async ({
   to,
   subject,
   attachments,
