@@ -83,7 +83,6 @@ const changePassword = async (
   newPassword: string,
   decodedUser: JwtPayload
 ) => {
-  console.log(userId, decodedUser.id);
   if (userId !== decodedUser.id) {
     throw new AppError(StatusCodes.BAD_REQUEST, "you can not change password");
   }
