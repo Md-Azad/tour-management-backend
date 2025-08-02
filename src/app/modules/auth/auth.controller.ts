@@ -79,12 +79,32 @@ const forgetPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body;
 
-    await authService.forgetPassword(email);
+    const result = await authService.forgetPassword(email);
+
+    setAuthTokenToCookie(res, { accessToken: result as string });
 
     sendResponce(res, {
       success: true,
       statusCode: StatusCodes.OK,
       message: "Email sent successfully.",
+      data: null,
+    });
+  }
+);
+const changePassword = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id, newPassword } = req.body;
+    const decodedToken = req.user as JwtPayload;
+
+    console.log(decodedToken.id);
+
+    await authService.changePassword(id, newPassword, decodedToken);
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: "password changed successfully successfully.",
       data: null,
     });
   }
@@ -157,4 +177,5 @@ export const authController = {
   googleCallBack,
   setPassword,
   forgetPassword,
+  changePassword,
 };

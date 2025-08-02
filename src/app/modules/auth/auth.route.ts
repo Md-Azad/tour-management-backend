@@ -3,6 +3,8 @@ import { authController } from "./auth.controller";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
 import passport from "passport";
+import { validation } from "../../middlewares/responceValidation";
+import { changePasswordZodSchema } from "./auth.validation";
 
 const router = Router();
 
@@ -20,6 +22,12 @@ router.post(
   authController.setPassword
 );
 router.post("/forget-password", authController.forgetPassword);
+router.post(
+  "/change-password",
+  validation(changePasswordZodSchema),
+  checkAuth(...Object.values(Role)),
+  authController.changePassword
+);
 
 router.get(
   "/google",

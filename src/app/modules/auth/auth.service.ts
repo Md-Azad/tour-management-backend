@@ -78,6 +78,26 @@ const resetPassword = async (
 
   user?.save();
 };
+const changePassword = async (
+  userId: string,
+  newPassword: string,
+  decodedUser: JwtPayload
+) => {
+  console.log(userId, decodedUser.id);
+  if (userId !== decodedUser.id) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "you can not change password");
+  }
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "User is not found.");
+  }
+
+  const hashedNewPassword = await hashPassword(newPassword);
+
+  user.password = hashedNewPassword;
+
+  await user?.save();
+};
 const setPassword = async (userId: string, plainPassword: string) => {
   const user = await User.findById(userId);
 
@@ -144,6 +164,8 @@ const forgetPassword = async (email: string) => {
       resetUILink,
     },
   });
+
+  return token;
 };
 
 export const authService = {
@@ -152,4 +174,5 @@ export const authService = {
   resetPassword,
   setPassword,
   forgetPassword,
+  changePassword,
 };
