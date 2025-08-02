@@ -9,6 +9,7 @@ import AppError from "../../errorHelpers/AppError";
 import { createUserToken } from "../../utils/userTokens";
 import { envVars } from "../../config/env";
 import passport from "passport";
+import { JwtPayload } from "jsonwebtoken";
 
 const credentialLogin = catchAsync(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -63,12 +64,43 @@ const resetPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const newPassword = req.body.newPassword;
     const oldPassword = req.body.oldPassword;
-    const decodedUser = req.user;
+    const decodedUser = req.user as JwtPayload;
     await authService.resetPassword(newPassword, oldPassword, decodedUser);
     sendResponce(res, {
       success: true,
       statusCode: StatusCodes.OK,
       message: "Password has been updated.",
+      data: null,
+    });
+  }
+);
+const forgetPassword = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { email } = req.body;
+
+    await authService.forgetPassword(email);
+
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: "Email sent successfully.",
+      data: null,
+    });
+  }
+);
+const setPassword = catchAsync(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedUser = req.user as JwtPayload;
+
+    const { password } = req.body;
+
+    await authService.setPassword(decodedUser?.userId, password);
+    sendResponce(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: "Password has been added successfully.",
       data: null,
     });
   }
@@ -109,6 +141,7 @@ const googleCallBack = catchAsync(
     }
 
     const tokens = createUserToken(user);
+    console.log(tokens);
 
     setAuthTokenToCookie(res, tokens);
 
@@ -122,4 +155,6 @@ export const authController = {
   logout,
   resetPassword,
   googleCallBack,
+  setPassword,
+  forgetPassword,
 };

@@ -12,16 +12,18 @@ router.post(
   validation(createUserZodSchema),
   userController.createUser
 );
+
+router.get("/me", checkAuth(...Object.values(Role)), userController.getMe);
+router.get(
+  "/all-users",
+  checkAuth("ADMIN", "SUPER_ADMIN"),
+  userController.getAllUsers
+);
 router.patch(
   "/:id",
   checkAuth(...Object.values(Role)),
   validation(updateUserZodSchema),
   userController.updateUser
-);
-router.get(
-  "/all-users",
-  checkAuth("ADMIN", "SUPER_ADMIN"),
-  userController.getAllUsers
 );
 router.get("/:id", userController.getSingleUser);
 router.delete("/:id", userController.deleteUser);

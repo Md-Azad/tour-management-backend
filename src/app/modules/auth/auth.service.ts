@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { StatusCodes } from "http-status-codes";
 import AppError from "../../errorHelpers/AppError";
-import { IUser } from "../user/user.interface";
+import { IAuthProvider, IsActive, IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
 import bcrypt from "bcryptjs";
 import {
@@ -10,6 +10,10 @@ import {
 } from "../../utils/userTokens";
 import { JwtPayload } from "jsonwebtoken";
 import { hashPassword } from "../../utils/hashPassword";
+
+import jwt from "jsonwebtoken";
+import { envVars } from "../../config/env";
+import { sendEmail } from "../../utils/sendEmail";
 
 const credentialLogin = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
@@ -56,7 +60,10 @@ const resetPassword = async (
   oldPassword: string,
   decodedUser: JwtPayload
 ) => {
-  const user = await User.findById({ _id: decodedUser.userId });
+  const user = await User.findById(decodedUser.userId);
+  if (!user) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "User is not found.");
+  }
   const isOldPasswordMatch = await bcrypt.compare(
     oldPassword,
     user!.password as string
@@ -67,13 +74,82 @@ const resetPassword = async (
   }
   const hashedNewPassword = await hashPassword(newPassword);
 
-  user!.password = hashedNewPassword;
+  user.password = hashedNewPassword;
 
   user?.save();
+};
+const setPassword = async (userId: string, plainPassword: string) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "User is not found.");
+  }
+
+  if (user.password && user.auths.some((pro) => pro.provider === "gmail")) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      "You already set password. You can reset Password now"
+    );
+  }
+  const credantialProvider: IAuthProvider = {
+    provider: "credentials",
+    providerId: user.email,
+  };
+  const hashedNewPassword = await hashPassword(plainPassword);
+  const auths = [...user.auths, credantialProvider];
+
+  user.password = hashedNewPassword;
+  user.auths = auths;
+
+  user.save();
+};
+const forgetPassword = async (email: string) => {
+  const isExistUser = await User.findOne({ email });
+
+  if (!isExistUser) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "User is not found.");
+  }
+
+  if (
+    isExistUser.isActive === IsActive.INACTIVE ||
+    isExistUser.isActive === IsActive.BLOCKED
+  ) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      `The user is ${isExistUser.isActive}`
+    );
+  }
+  if (isExistUser.isDeleted) {
+    throw new AppError(StatusCodes.BAD_REQUEST, `The user is deleted.`);
+  }
+
+  const jwtPayload = {
+    id: isExistUser._id,
+    email: isExistUser.email,
+    role: isExistUser.role,
+  };
+
+  const token = jwt.sign(jwtPayload, envVars.JWT_ACCESS_TOKEN, {
+    expiresIn: "10m",
+  });
+
+  const resetUILink = `${envVars.FRONTEND_URL}/reset-password?id=${isExistUser._id}&token=${token}`;
+
+  sendEmail({
+    to: isExistUser.email,
+    subject: "Forget Password",
+    templateName: "forgetPassword.ejs",
+    templateData: {
+      name: isExistUser.name,
+      resetUILink,
+    },
+  });
 };
 
 export const authService = {
   credentialLogin,
   getNewAccessToken,
   resetPassword,
+  setPassword,
+  forgetPassword,
 };
