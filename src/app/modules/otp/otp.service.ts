@@ -6,6 +6,13 @@ import { sendEmail } from "../../utils/sendEmail";
 import { User } from "../user/user.model";
 
 const sendOtp = async (email: string, name: string) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "User not found.");
+  }
+  if (user.isVerified) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "You are already verified.");
+  }
   const otp = createOtp();
   const expiration = 2 * 60;
   const redisKey = `otp:${email}`;
@@ -26,6 +33,13 @@ const sendOtp = async (email: string, name: string) => {
   });
 };
 const verifyOtp = async (email: string, otp: string) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "User not found.");
+  }
+  if (user.isVerified) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "You are already verified.");
+  }
   const redisKey = `otp:${email}`;
 
   const storedOtp = await redisClient.get(redisKey);
