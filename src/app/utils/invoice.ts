@@ -4,7 +4,7 @@ import AppError from "../errorHelpers/AppError";
 
 export interface IInvoiceData {
   transactionId: string;
-  bookingDate: Date;
+  bookingDate: string;
   userName: string;
   tourTitle: string;
   guestCount: number;
@@ -23,21 +23,79 @@ export const generatePdf = async (
       doc.on("end", () => resolve(Buffer.concat(buffer)));
       doc.on("error", (err) => reject(err));
 
-      //PDF Content
-      doc.fontSize(20).text("Invoice", { align: "center" });
-      doc.moveDown();
-      doc.fontSize(14).text(`Transaction ID : ${invoiceData.transactionId}`);
-      doc.text(`Booking Date : ${invoiceData.bookingDate}`);
-      doc.text(`Customer : ${invoiceData.userName}`);
+      // Header
+      doc
+        .fontSize(24)
+        .font("Helvetica-Bold")
+        .text("Tour Booking Invoice", { align: "center" });
 
       doc.moveDown();
+      doc
+        .moveTo(50, doc.y)
+        .lineTo(545, doc.y)
+        .strokeColor("#444")
+        .lineWidth(1)
+        .stroke();
 
-      doc.text(`Tour: ${invoiceData.tourTitle}`);
-      doc.text(`Guests: ${invoiceData.guestCount}`);
+      doc.moveDown(1.5);
+
+      // Transaction Info
+      doc
+        .fontSize(14)
+        .font("Helvetica-Bold")
+        .text("Transaction Details", { underline: true });
+      doc.moveDown(0.5);
+
+      doc
+        .font("Helvetica")
+        .fontSize(12)
+        .text(`Transaction ID: ${invoiceData.transactionId}`);
+      doc.text(
+        `Booking Date: ${new Date(
+          invoiceData.bookingDate
+        ).toLocaleDateString()}`
+      );
+      doc.text(`Customer Name: ${invoiceData.userName}`);
+
+      doc.moveDown();
+      doc
+        .moveTo(50, doc.y)
+        .lineTo(545, doc.y)
+        .strokeColor("#ccc")
+        .lineWidth(0.5)
+        .stroke();
+
+      doc.moveDown(1.5);
+
+      // Tour Details
+      doc
+        .fontSize(14)
+        .font("Helvetica-Bold")
+        .text("Tour Details", { underline: true });
+      doc.moveDown(0.5);
+
+      doc
+        .font("Helvetica")
+        .fontSize(12)
+        .text(`Tour Title: ${invoiceData.tourTitle}`);
+      doc.text(`Guest Count: ${invoiceData.guestCount}`);
       doc.text(`Total Amount: $${invoiceData.totalAmount.toFixed(2)}`);
-      doc.moveDown();
 
-      doc.text("Thank you for booking with us!", { align: "center" });
+      doc.moveDown();
+      doc
+        .moveTo(50, doc.y)
+        .lineTo(545, doc.y)
+        .strokeColor("#ccc")
+        .lineWidth(0.5)
+        .stroke();
+
+      doc.moveDown(2);
+
+      // Footer
+      doc.font("Helvetica-Bold").fontSize(13).fillColor("#333");
+      doc.text("Thank you for booking with us!", {
+        align: "center",
+      });
 
       doc.end();
     });

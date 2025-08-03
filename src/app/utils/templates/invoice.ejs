@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= subject %></title>
+  </head>
+  <body
+    style="
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
+    "
+  >
+    <div
+      style="
+        max-width: 600px;
+        margin: auto;
+        background-color: #fff;
+        border-radius: 6px;
+        padding: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <h2 style="text-align: center; color: #333"><%= subject %></h2>
+
+      <hr style="margin: 20px 0" />
+
+      <p>Hi <strong><%= userName %></strong>,</p>
+      <p>
+        Thank you for booking your tour with us! Here are your booking details:
+      </p>
+
+      <table style="width: 100%; margin-top: 20px; font-size: 14px">
+        <tr>
+          <td><strong>Transaction ID:</strong></td>
+          <td><%= transactionId %></td>
+        </tr>
+        <tr>
+          <td><strong>Booking Date:</strong></td>
+          <td><%= new Date(bookingDate).toLocaleDateString() %></td>
+        </tr>
+        <tr>
+          <td><strong>Customer Name:</strong></td>
+          <td><%= userName %></td>
+        </tr>
+        <tr>
+          <td><strong>Tour Title:</strong></td>
+          <td><%= tourTitle %></td>
+        </tr>
+        <tr>
+          <td><strong>Guest Count:</strong></td>
+          <td><%= guestCount %></td>
+        </tr>
+        <tr>
+          <td><strong>Total Amount:</strong></td>
+          <td>$<%= totalAmount.toFixed(2) %></td>
+        </tr>
+      </table>
+
+      <p style="margin-top: 30px">We hope you have a wonderful trip!</p>
+
+      <p style="margin-top: 10px">
+        Warm regards,<br />The Tour Management Team
+      </p>
+    </div>
+  </body>
+</html>
