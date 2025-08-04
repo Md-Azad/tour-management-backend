@@ -13,6 +13,7 @@ import { formatedDate } from "../../utils/dateConversion";
 import { IUser } from "../user/user.interface";
 import { sendEmail } from "../../utils/sendEmail";
 import { uploadBufferToCloudinary } from "../../config/cloudinary.config";
+import { JwtPayload } from "jsonwebtoken";
 
 const initPayment = async (bookingId: string) => {
   const payment = await Payment.findOne({ booking: bookingId });
@@ -199,10 +200,40 @@ const cancelPayment = async (query: Record<string, string>) => {
     throw error;
   }
 };
+const getInvoiceDownloadUrl = async (
+  paymentId: string,
+  decodedToken: JwtPayload
+) => {
+  const payment = await Payment.findById(paymentId).select(
+    "booking invoiceUrl"
+  );
+
+  if (!payment) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "Payment not found.");
+  }
+
+  const user = await Booking.findById(payment.booking).populate(
+    "user",
+    "email"
+  );
+  if (!user) {
+    throw new AppError(400, "Booking did not find");
+  }
+
+  if (user.user._id.toString() !== decodedToken.userId) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      "You are not permitted to download this pdf."
+    );
+  }
+
+  return payment.invoiceUrl;
+};
 
 export const paymentService = {
   initPayment,
   successPayment,
   failPayment,
   cancelPayment,
+  getInvoiceDownloadUrl,
 };

@@ -4,6 +4,7 @@ import { paymentService } from "./payment.service";
 import { envVars } from "../../config/env";
 import { sendResponce } from "../../utils/apiResponce";
 import { StatusCodes } from "http-status-codes";
+import { JwtPayload } from "jsonwebtoken";
 
 const initPayment = catchAsync(async (req: Request, res: Response) => {
   const bookingId = req.params.bookingId;
@@ -58,10 +59,29 @@ const cancelPayment = catchAsync(async (req: Request, res: Response) => {
     );
   }
 });
+const getInvoiceDownloadUrl = catchAsync(
+  async (req: Request, res: Response) => {
+    const paymemntId = req.params.paymentId;
+    const decodedToken = req.user as JwtPayload;
+
+    const result = await paymentService.getInvoiceDownloadUrl(
+      paymemntId,
+      decodedToken
+    );
+
+    sendResponce(res, {
+      statusCode: StatusCodes.CREATED,
+      success: true,
+      message: "Invoice url retrieved Successfully.",
+      data: result,
+    });
+  }
+);
 
 export const paymentController = {
   successPayment,
   failPayment,
   cancelPayment,
   initPayment,
+  getInvoiceDownloadUrl,
 };
