@@ -25,7 +25,11 @@ router.patch(
   validation(updateUserZodSchema),
   userController.updateUser
 );
-router.get("/:id", userController.getSingleUser);
+router.get(
+  "/:id",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  userController.getSingleUser
+);
 router.delete("/:id", userController.deleteUser);
 
 export const userRouter = router;

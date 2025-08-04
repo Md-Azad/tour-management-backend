@@ -1,4 +1,4 @@
-import httpStatus from "http-status-codes";
+import httpStatus, { StatusCodes } from "http-status-codes";
 import { IAuthProvider, IUser, Role } from "./user.interface";
 import { User } from "./user.model";
 import AppError from "../../errorHelpers/AppError";
@@ -31,6 +31,11 @@ const updateUser = async (
   payload: Partial<IUser>,
   verifiedToken: JwtPayload
 ) => {
+  if (verifiedToken.role === Role.USER || Role.GUIDE) {
+    if (userId !== verifiedToken.userId) {
+      throw new AppError(StatusCodes.FORBIDDEN, "You are not authorised");
+    }
+  }
   const isExist = await User.findById({ _id: userId });
 
   if (!isExist) {
@@ -56,9 +61,6 @@ const updateUser = async (
     }
   }
 
-  if (payload.password) {
-    payload.password = await hashPassword(payload.password);
-  }
   const newUpdatedUser = await User.findByIdAndUpdate(userId, payload, {
     new: true,
     runValidators: true,
@@ -80,6 +82,9 @@ const getAllUser = async () => {
 
 const getSingleUser = async (id: string) => {
   const user = await User.findById(id).select("-password");
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, "User not found.");
+  }
   return user;
 };
 const getMe = async (id: string) => {
