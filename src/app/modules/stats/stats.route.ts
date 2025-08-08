@@ -10,5 +10,20 @@ router.get(
   checkAuth(Role.SUPER_ADMIN, Role.ADMIN),
   statsController.getUserStats
 );
+router.get(
+  "/tour-stats",
+  checkAuth(Role.SUPER_ADMIN, Role.ADMIN),
+  statsController.getTourStats
+);
+router.get(
+  "/booking-stats",
+  checkAuth(Role.SUPER_ADMIN, Role.ADMIN),
+  statsController.getBookingStats
+);
+router.get(
+  "/payment-stats",
+  checkAuth(Role.SUPER_ADMIN, Role.ADMIN),
+  statsController.getPaymentStats
+);
 
 export const statsRoutes = router;
