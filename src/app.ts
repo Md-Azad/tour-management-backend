@@ -22,6 +22,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cookieParser());
+app.set("trust proxy", 1);
 app.use(
   cors({
     origin: envVars.FRONTEND_URL,

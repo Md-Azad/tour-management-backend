@@ -5,6 +5,7 @@ import { envVars } from "../../config/env";
 import { sendResponce } from "../../utils/apiResponce";
 import { StatusCodes } from "http-status-codes";
 import { JwtPayload } from "jsonwebtoken";
+import { sslCommerzService } from "../sslCommerz/sslCommerz.service";
 
 const initPayment = catchAsync(async (req: Request, res: Response) => {
   const bookingId = req.params.bookingId;
@@ -77,6 +78,16 @@ const getInvoiceDownloadUrl = catchAsync(
     });
   }
 );
+const validatePayment = catchAsync(async (req: Request, res: Response) => {
+  await sslCommerzService.validatePayment(req.body);
+
+  sendResponce(res, {
+    statusCode: StatusCodes.CREATED,
+    success: true,
+    message: "Payment verified Successfully.",
+    data: null,
+  });
+});
 
 export const paymentController = {
   successPayment,
@@ -84,4 +95,5 @@ export const paymentController = {
   cancelPayment,
   initPayment,
   getInvoiceDownloadUrl,
+  validatePayment,
 };
