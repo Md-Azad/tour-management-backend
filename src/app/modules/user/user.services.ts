@@ -24,7 +24,10 @@ const createUser = async (payload: Partial<IUser>) => {
     ...rest,
   });
 
-  return user;
+  const userObj = user.toObject();
+  delete userObj.password;
+
+  return userObj;
 };
 const updateUser = async (
   userId: string,
