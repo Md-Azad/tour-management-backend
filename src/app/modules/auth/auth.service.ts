@@ -36,6 +36,12 @@ const credentialLogin = async (payload: Partial<IUser>) => {
       "Email or Password is incorrect."
     );
   }
+  if (isUserExist && isUserExist.isVerified === false) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      "Email or Password is incorrect."
+    );
+  }
 
   const token = createUserToken(isUserExist);
 

@@ -53,6 +53,10 @@ passport.use(
           return done(null, false, { message: "Password does not match" });
         }
 
+        if (isUserExist && isUserExist.isVerified === false) {
+          return done(null, false, { message: "User is not verified" });
+        }
+
         return done(null, isUserExist);
       } catch (error) {
         done(error);
